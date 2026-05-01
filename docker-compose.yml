@@ -8,12 +8,17 @@ services:
     restart: unless-stopped
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
+      - AZURE_OPENAI_KEY=${AZURE_OPENAI_KEY}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT}
+      - AZURE_OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
       - DATABASE_PATH=data/fitness.db
       - LOG_LEVEL=INFO
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
-      - ./config/.env:/app/config/.env
     healthcheck:
       test: ["CMD", "python", "-c", "import sqlite3; sqlite3.connect('data/fitness.db')"]
       interval: 30s

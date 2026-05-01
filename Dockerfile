@@ -1,24 +1,34 @@
-# FitCoach Bot - Dockerfile
+# FitCoach Bot - Dockerfile for Render
 FROM python:3.10-slim
 
-# إعداد العمل
+# Set working directory
 WORKDIR /app
 
-# نسخ المتطلبات
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# نسخ الكود
+# Copy application code
 COPY bot/ ./bot/
 COPY config/ ./config/
 COPY data/ ./data/
 RUN mkdir -p logs
 
-# إنشاء ملف البيئة إذا لم يكن موجوداً
-RUN if [ ! -f config/.env ]; then cp config/.env.example config/.env; fi
+# Create necessary directories
+RUN mkdir -p data logs config
 
-# كشف المنفذ
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV DATABASE_PATH=data/fitness.db
+ENV LOG_LEVEL=INFO
+
+# Expose port (for health checks)
 EXPOSE 8000
 
-# الأمر الافتراضي
+# Run the bot
 CMD ["python", "bot/main.py"]
