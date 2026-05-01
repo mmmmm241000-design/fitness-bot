@@ -1,0 +1,21 @@
+# FitCoach Bot - docker-compose.yml
+version: '3.8'
+
+services:
+  fitness-bot:
+    build: .
+    container_name: fitness-coach-bot
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - DATABASE_PATH=data/fitness.db
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config/.env:/app/config/.env
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sqlite3; sqlite3.connect('data/fitness.db')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

@@ -1,0 +1,28 @@
+# FitCoach Bot - متطلبات التشغيل
+# بوت المدرب الذكي لكمال الأجسام
+
+# مكتبة بوت تلجرام
+python-telegram-bot>=20.0
+
+# قاعدة البيانات
+SQLAlchemy>=2.0.0
+
+# تحميل المتغيرات البيئية
+python-dotenv>=1.0.0
+
+# Azure OpenAI (ذكاء اصطناعي)
+openai>=1.0.0
+azure-identity>=1.15.0
+
+# رسوم بيانية للتقارير (اختياري)
+matplotlib>=3.8.0
+
+# للتطوير والاختبار
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+
+# تسجيل السجلات
+colorlog>=6.8.0
+
+# HTTP client
+aiohttp>=3.9.0
