@@ -5,6 +5,7 @@ FitCoach Bot - نقطة الدخول الرئيسية
 import logging
 import os
 import sys
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # إضافة مسار المشروع
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -209,6 +210,27 @@ async def handle_text_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    """معالج health check لـ Render"""
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(b'OK')
+    def log_message(self, format, *args):
+        pass  # Suppress logs
+
+def start_health_server(port=10000):
+    """تشغيل خادم health check"""
+    try:
+        server = HTTPServer(('', port), HealthCheckHandler)
+        import threading
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        print(f"✅ Health check server running on port {port}")
+    except Exception as e:
+        print(f"⚠️ Health server error: {e}")
+
 def main():
     """الدالة الرئيسية"""
 
@@ -216,6 +238,9 @@ def main():
     os.makedirs("data", exist_ok=True)
     os.makedirs("logs", exist_ok=True)
     os.makedirs("config", exist_ok=True)
+
+    # تشغيل health check server أولاً
+    start_health_server()
 
     # تهيئة قاعدة البيانات
     logger.info("جاري تهيئة قاعدة البيانات...")
